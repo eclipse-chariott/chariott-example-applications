@@ -1,5 +1,7 @@
 # Dogmode Example
 
+- [Introduction](#introduction)
+
 ## Introduction
 
 The dog mode example will be migrated to this repository component-by-component. The description
