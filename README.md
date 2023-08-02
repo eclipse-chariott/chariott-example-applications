@@ -7,8 +7,10 @@
 ## Introduction
 
 This repository contains Eclipse Chariott example applications and integrations with other
-components (like Eclipse Agemo, Eclipse Ibeji, and Eclipse Freyja). It also serves as a place to
-incubate early ideas for an eventual blueprint.
+components like [Eclipse Agemo](https://github.com/eclipse-chariott/Agemo),
+[Eclipse Ibeji](https://github.com/eclipse-ibeji/ibeji), and
+[Eclipse Freyja](https://github.com/eclipse-ibeji/freyja). It also serves as a place to incubate
+early ideas for an eventual blueprint.
 
 ## Examples
 
