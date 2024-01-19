@@ -52,27 +52,18 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install protobuf-compiler
         run: sudo apt-get install -y protobuf-compiler
-      - name: Install stable toolchain
-        run: rustup show
+      - name: Install Rust toolchain
+        uses: ./.github/actions/install-rust-toolchain
       - name: Cache Dependencies
-        uses: Swatinem/rust-cache@v1
-      - name: Run cargo-tarpaulin
-        uses: actions-rs/tarpaulin@v0.1
+        uses: Swatinem/rust-cache@v2
+      - name: Build
+        uses: actions-rs/cargo@v1
         with:
-          version: '0.21.0'
-          args: '--workspace --ignore-tests --skip-clean --exclude-files spikes/* --exclude-files examples/* --exclude-files tests/*'
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v1
+          command: build
+      - name: Test
+        uses: actions-rs/cargo@v1
         with:
-          name: code-coverage-report
-          path: cobertura.xml
-      - uses: 5monkeys/cobertura-action@master
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == 'eclipse/chariott' && github.actor != 'dependabot[bot]' }}
-        with:
-          path: cobertura.xml
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          minimum_coverage: 80
-          only_changed_files: true
+          command: test
 
   buf:
     runs-on: ubuntu-latest
