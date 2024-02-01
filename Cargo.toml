@@ -1,0 +1,45 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+# SPDX-License-Identifier: MIT
+
+[workspace]
+members = [
+    "intent_brokering/dogmode/common",
+    "intent_brokering/dogmode/applications/cloud-object-detection",
+    "intent_brokering/dogmode/applications/dog-mode-logic",
+    "intent_brokering/dogmode/applications/kv-app",
+    "intent_brokering/dogmode/applications/local-object-detection",
+    "intent_brokering/dogmode/applications/mock-vas",
+    "intent_brokering/dogmode/applications/simulated-camera",
+]
+
+[workspace.dependencies]
+anyhow = "1.0"
+async-trait = "0.1"
+intent_brokering_common = { path = "external/chariott/intent_brokering/common" }
+intent_brokering_proto = { path = "external/chariott/intent_brokering/proto.rs" }
+futures = { version = "0.3" }
+lazy_static = "1.4.0"
+parking_lot = "0.12.1"
+prost = "0.12"
+prost-types = "0.12"
+regex = "1.10"
+serde = "1.0.195"
+serde_json = "1.0.111"
+tokio = { version = "1.35", features = ["macros"] }
+tokio-util = "0.7"
+tokio-stream = { version = "0.1", features = ["net"] }
+tonic = "0.10"
+tonic-build = "0.10"
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1.7.0", features = ["v4"] }
+url = "2.5"
+test-case = "2.2.2"
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.48.0" />
+    <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\..\..\..\external\chariott\intent_brokering\proto\intent_brokering\common\v1\common.proto;..\..\..\..\..\external\chariott\intent_brokering\proto\intent_brokering\runtime\v1\runtime.proto;..\..\..\..\..\external\chariott\intent_brokering\proto\intent_brokering\streaming\v1\streaming.proto" ProtoRoot="..\..\..\..\..\external\chariott\intent_brokering\proto\" GrpcServices="Client" Link="Protos\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>
