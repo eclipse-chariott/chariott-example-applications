@@ -27,7 +27,9 @@ impl DetectionLogic {
         let mut graph = Graph::new();
         let proto = include_bytes!("../models/ssd_mobilenet_v2_coco.pb");
 
-        graph.import_graph_def(proto, &ImportGraphDefOptions::new()).unwrap();
+        graph
+            .import_graph_def(proto, &ImportGraphDefOptions::new())
+            .unwrap();
 
         Self { graph }
     }
@@ -76,10 +78,12 @@ impl DetectionLogic {
             // Collect results and map to human readable categories
             let categories = get_categories()?;
             let classes_categories =
-                classes_tensor.iter().map(|v| match categories.iter().find(|c| c.id.eq(v)) {
-                    Some(c) => c.name.clone(),
-                    None => NO_MATCHING_CATEGORY.to_owned(),
-                });
+                classes_tensor
+                    .iter()
+                    .map(|v| match categories.iter().find(|c| c.id.eq(v)) {
+                        Some(c) => c.name.clone(),
+                        None => NO_MATCHING_CATEGORY.to_owned(),
+                    });
 
             Ok(DetectResponse::new(
                 scores_tensor

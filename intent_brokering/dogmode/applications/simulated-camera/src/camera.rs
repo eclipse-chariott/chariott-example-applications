@@ -37,7 +37,10 @@ impl CameraLogic {
             )));
         }
 
-        Ok(CameraLogic { store, images_directory })
+        Ok(CameraLogic {
+            store,
+            images_directory,
+        })
     }
 
     // A note for the reader of this example
@@ -68,9 +71,18 @@ impl CameraLogic {
         let images = self.get_images_from_folder()?;
         let mut cycle = images.iter().cycle();
         let mut hashmap: HashMap<Box<str>, (Instant, Duration)> = HashMap::new();
-        hashmap.insert("camera.2fpm".into(), (Instant::now(), Duration::from_secs(30)));
-        hashmap.insert("camera.6fpm".into(), (Instant::now(), Duration::from_secs(10)));
-        hashmap.insert("camera.12fpm".into(), (Instant::now(), Duration::from_secs(5)));
+        hashmap.insert(
+            "camera.2fpm".into(),
+            (Instant::now(), Duration::from_secs(30)),
+        );
+        hashmap.insert(
+            "camera.6fpm".into(),
+            (Instant::now(), Duration::from_secs(10)),
+        );
+        hashmap.insert(
+            "camera.12fpm".into(),
+            (Instant::now(), Duration::from_secs(5)),
+        );
         let loop_cycle = Duration::from_secs(1);
 
         loop {

@@ -77,14 +77,18 @@ where
     T: Into<ValueEnum> + Clone + Send + Sync + 'static,
 {
     fn subscribe(&self, subscribe_intent: SubscribeIntent) -> Result<Fulfillment, Status> {
-        let result = self.ess().serve_subscriptions(subscribe_intent, |(_, v)| v.into())?;
+        let result = self
+            .ess()
+            .serve_subscriptions(subscribe_intent, |(_, v)| v.into())?;
         Ok(Fulfillment::Subscribe(result))
     }
 
     fn read(&self, intent: ReadIntent) -> Fulfillment {
         let value = self.get(&intent.key.into());
         Fulfillment::Read(ReadFulfillment {
-            value: Some(ValueMessage { value: value.map(|v| v.into()) }),
+            value: Some(ValueMessage {
+                value: value.map(|v| v.into()),
+            }),
         })
     }
 }

@@ -19,7 +19,12 @@ async fn wain() -> Result<(), Error> {
         "sdv.cabin.camera",
         "0.0.1",
         "sdv.camera.simulated",
-        [Intent::Discover, Intent::Subscribe, Intent::Inspect, Intent::Read],
+        [
+            Intent::Discover,
+            Intent::Subscribe,
+            Intent::Inspect,
+            Intent::Read,
+        ],
         "SIMULATED_CAMERA_URL",
         "http://0.0.0.0:50066", // DevSkim: ignore DS137138
         ExecutionLocality::Local,

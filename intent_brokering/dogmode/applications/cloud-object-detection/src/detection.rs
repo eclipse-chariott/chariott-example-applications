@@ -27,7 +27,11 @@ impl DetectionLogic {
             Err(_) => panic!("Missing COGNITIVE_KEY environment variable"),
         };
 
-        Self { http_client, cognitive_endpoint, cognitive_key }
+        Self {
+            http_client,
+            cognitive_endpoint,
+            cognitive_key,
+        }
     }
 
     pub async fn detect_cloud(&self, body: DetectRequest) -> Result<DetectResponse, Error> {
@@ -45,8 +49,10 @@ impl DetectionLogic {
             .and_then(|r| r.error_for_status())
             .map_err_with("Request to Cognitive Services failed.")?;
 
-        let deserialized_response =
-            response.json::<DetectionResponse>().await.map_err_with("Deserialization failed")?;
+        let deserialized_response = response
+            .json::<DetectionResponse>()
+            .await
+            .map_err_with("Deserialization failed")?;
 
         Ok(DetectResponse::new(
             deserialized_response
@@ -91,7 +97,10 @@ impl<'a> Iterator for ObjectAscendantsAndSelfIterator<'a> {
     type Item = &'a Object;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let mut next = self.next.and_then(|n| n.parent.as_ref()).map(|p| p.as_ref());
+        let mut next = self
+            .next
+            .and_then(|n| n.parent.as_ref())
+            .map(|p| p.as_ref());
         mem::swap(&mut self.next, &mut next);
         next
     }

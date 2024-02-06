@@ -18,7 +18,13 @@ impl Entry {
         path: impl Into<Box<str>>,
         items: impl IntoIterator<Item = (impl Into<Box<str>>, impl Into<Value>)>,
     ) -> Self {
-        Self(path.into(), items.into_iter().map(|(k, v)| (k.into(), v.into())).collect())
+        Self(
+            path.into(),
+            items
+                .into_iter()
+                .map(|(k, v)| (k.into(), v.into()))
+                .collect(),
+        )
     }
 
     pub fn get(&self, key: impl Borrow<str>) -> Option<&Value> {
@@ -41,7 +47,10 @@ pub fn fulfill<'a>(
             .filter(|Entry(path, _)| regex.is_match(path))
             .map(|Entry(path, items)| EntryMessage {
                 path: path.to_string(),
-                items: items.iter().map(|(k, v)| (k.to_string(), v.clone().into())).collect(),
+                items: items
+                    .iter()
+                    .map(|(k, v)| (k.to_string(), v.clone().into()))
+                    .collect(),
             })
             .collect(),
     })

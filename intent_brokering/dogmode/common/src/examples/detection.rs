@@ -36,7 +36,10 @@ pub struct DetectionObject {
 
 impl DetectionObject {
     pub fn new(object: impl Into<Box<str>>, confidence: f64) -> Self {
-        Self { object: object.into(), confidence }
+        Self {
+            object: object.into(),
+            confidence,
+        }
     }
 }
 
@@ -45,14 +48,19 @@ impl TryFrom<InvokeIntent> for DetectRequest {
 
     fn try_from(intent: InvokeIntent) -> Result<Self, Self::Error> {
         if intent.args.len() != 1 || intent.command != "detect" {
-            return Err(Error::new("No command found which accepts the invocation arguments."));
+            return Err(Error::new(
+                "No command found which accepts the invocation arguments.",
+            ));
         }
 
-        let value: Value =
-            intent.args[0].clone().try_into().map_err(|_| Error::new("Could not parse value."))?;
+        let value: Value = intent.args[0]
+            .clone()
+            .try_into()
+            .map_err(|_| Error::new("Could not parse value."))?;
 
-        let (type_url, value) =
-            value.into_any().map_err(|_| Error::new("Argument was not of type 'Any'."))?;
+        let (type_url, value) = value
+            .into_any()
+            .map_err(|_| Error::new("Argument was not of type 'Any'."))?;
 
         if type_url == "examples.detection.v1.DetectRequest" {
             DetectRequestMessage::decode(&*value)
@@ -62,7 +70,9 @@ impl TryFrom<InvokeIntent> for DetectRequest {
                 })
                 .map(|Blob { bytes, .. }| DetectRequest(bytes))
         } else {
-            Err(Error::new("Argument was not of type 'examples.detection.v1.DetectRequest'."))
+            Err(Error::new(
+                "Argument was not of type 'examples.detection.v1.DetectRequest'.",
+            ))
         }
     }
 }
@@ -72,7 +82,10 @@ impl From<DetectResponse> for InvokeFulfillment {
         let entries = value
             .0
             .into_iter()
-            .map(|o| DetectEntry { object: o.object.into(), confidence: o.confidence })
+            .map(|o| DetectEntry {
+                object: o.object.into(),
+                confidence: o.confidence,
+            })
             .collect();
 
         InvokeFulfillment {

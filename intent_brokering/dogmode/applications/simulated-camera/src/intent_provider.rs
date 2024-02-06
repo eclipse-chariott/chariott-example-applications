@@ -87,7 +87,9 @@ impl ProviderService for IntentProvider {
         };
 
         Ok(Response::new(FulfillResponse {
-            fulfillment: Some(FulfillmentMessage { fulfillment: Some(response) }),
+            fulfillment: Some(FulfillmentMessage {
+                fulfillment: Some(response),
+            }),
         }))
     }
 }

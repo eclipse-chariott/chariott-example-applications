@@ -31,7 +31,10 @@ impl VehicleSimulation {
 
         let (cmd_sender, _) = broadcast::channel(command_channel_size);
 
-        VehicleSimulation { key_value_store, cmd_sender }
+        VehicleSimulation {
+            key_value_store,
+            cmd_sender,
+        }
     }
 
     pub async fn execute(
@@ -109,7 +112,10 @@ impl VehicleSimulation {
         };
 
         publish(CABIN_TEMPERATURE_PROPERTY, vehicle_state.temperature.into());
-        publish(AIR_CONDITIONING_STATE_PROPERTY, vehicle_state.air_conditioning_enabled.into());
+        publish(
+            AIR_CONDITIONING_STATE_PROPERTY,
+            vehicle_state.air_conditioning_enabled.into(),
+        );
         publish(BATTERY_LEVEL_PROPERTY, vehicle_state.battery_level.into());
 
         Ok(())
@@ -118,28 +124,35 @@ impl VehicleSimulation {
     pub async fn invoke(&self, command: &str, args: Vec<Value>) -> Result<Value, Error> {
         let action = match (command, args.as_slice()) {
             (ACTIVATE_AIR_CONDITIONING_COMMAND, [value]) => {
-                let value =
-                    value.to_bool().map_err(|_| Error::new("Argument must be of type 'Bool'."))?;
+                let value = value
+                    .to_bool()
+                    .map_err(|_| Error::new("Argument must be of type 'Bool'."))?;
                 info!("Set air conditioning: {}", value);
                 Ok(Some(Action::AirConditioning(value)))
             }
             (SEND_NOTIFICATION_COMMAND, [value]) => {
-                let value =
-                    value.as_str().map_err(|_| Error::new("Argument must be of type 'String'."))?;
+                let value = value
+                    .as_str()
+                    .map_err(|_| Error::new("Argument must be of type 'String'."))?;
                 info!("Sending notification: {}", value);
                 Ok(None)
             }
             (SET_UI_MESSAGE_COMMAND, [value]) => {
-                let value =
-                    value.as_str().map_err(|_| Error::new("Argument must be of type 'String'."))?;
+                let value = value
+                    .as_str()
+                    .map_err(|_| Error::new("Argument must be of type 'String'."))?;
                 info!("Setting message in UI: {}", value);
                 Ok(None)
             }
-            _ => Err(Error::new("No command found which accepts the invocation arguments.")),
+            _ => Err(Error::new(
+                "No command found which accepts the invocation arguments.",
+            )),
         }?;
 
         if let Some(action) = action {
-            self.cmd_sender.send(action).map_err_with("Error when sending a command.")?;
+            self.cmd_sender
+                .send(action)
+                .map_err_with("Error when sending a command.")?;
         }
 
         Ok(Value::TRUE)
@@ -157,7 +170,11 @@ struct VehicleState {
 
 impl VehicleState {
     fn new() -> Self {
-        Self { temperature: 20, battery_level: 100, air_conditioning_enabled: false }
+        Self {
+            temperature: 20,
+            battery_level: 100,
+            air_conditioning_enabled: false,
+        }
     }
 }
 

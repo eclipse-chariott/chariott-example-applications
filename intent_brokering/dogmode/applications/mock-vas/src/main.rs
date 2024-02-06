@@ -19,7 +19,13 @@ async fn wain() -> Result<(), Error> {
         "sdv.mock-vas",
         "0.0.1",
         "sdv.vdt",
-        [Intent::Discover, Intent::Invoke, Intent::Inspect, Intent::Subscribe, Intent::Read],
+        [
+            Intent::Discover,
+            Intent::Invoke,
+            Intent::Inspect,
+            Intent::Subscribe,
+            Intent::Read,
+        ],
         "VAS_URL",
         "http://0.0.0.0:50051", // DevSkim: ignore DS137138
         ExecutionLocality::Local,

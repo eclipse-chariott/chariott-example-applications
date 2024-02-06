@@ -54,7 +54,9 @@ impl FulfillResponseExt for Response<FulfillResponse> {
             .and_then(|fulfillment| fulfillment.fulfillment)
             .ok_or_else(|| Error::new("Did not receive fulfillment"))
             .and_then(|f| {
-                Fulfillment(f).try_into().map_err(|_| Error::new("Unpexpected fulfillment"))
+                Fulfillment(f)
+                    .try_into()
+                    .map_err(|_| Error::new("Unpexpected fulfillment"))
             })
     }
 }
@@ -78,7 +80,11 @@ impl_try_from_var!(Fulfillment, FulfillmentEnum::Inspect, InspectFulfillment);
 impl_try_from_var!(Fulfillment, FulfillmentEnum::Read, ReadFulfillment);
 impl_try_from_var!(Fulfillment, FulfillmentEnum::Write, WriteFulfillment);
 impl_try_from_var!(Fulfillment, FulfillmentEnum::Invoke, InvokeFulfillment);
-impl_try_from_var!(Fulfillment, FulfillmentEnum::Subscribe, SubscribeFulfillment);
+impl_try_from_var!(
+    Fulfillment,
+    FulfillmentEnum::Subscribe,
+    SubscribeFulfillment
+);
 impl_try_from_var!(Fulfillment, FulfillmentEnum::Discover, DiscoverFulfillment);
 
 #[derive(Clone)]
@@ -107,7 +113,9 @@ impl IntentBrokeringCommunication for GrpcIntentBrokering {
     ) -> Result<Response<FulfillResponse>, Error> {
         self.client
             .fulfill(Request::new(FulfillRequest {
-                intent: Some(IntentMessage { intent: Some(intent) }),
+                intent: Some(IntentMessage {
+                    intent: Some(intent),
+                }),
                 namespace: namespace.into().into(),
             }))
             .await
@@ -181,15 +189,21 @@ impl<T: IntentBrokeringCommunication> IntentBrokering for T {
 
         let args = args.into_iter().map(|arg| arg.into()).collect();
 
-        self.fulfill(namespace, IntentEnum::Invoke(InvokeIntent { args, command: command.into() }))
-            .await?
-            .fulfillment()
-            .and_then(|invoke: InvokeFulfillment| {
-                invoke
-                    .r#return
-                    .and_then(|v| v.try_into().ok())
-                    .ok_or_else(|| Error::new("Return value could not be parsed."))
-            })
+        self.fulfill(
+            namespace,
+            IntentEnum::Invoke(InvokeIntent {
+                args,
+                command: command.into(),
+            }),
+        )
+        .await?
+        .fulfillment()
+        .and_then(|invoke: InvokeFulfillment| {
+            invoke
+                .r#return
+                .and_then(|v| v.try_into().ok())
+                .ok_or_else(|| Error::new("Return value could not be parsed."))
+        })
     }
 
     async fn subscribe<I: IntoIterator<Item = Box<str>> + Send>(
@@ -205,7 +219,10 @@ impl<T: IntentBrokeringCommunication> IntentBrokering for T {
 
         self.fulfill(
             namespace,
-            IntentEnum::Subscribe(SubscribeIntent { channel_id: channel_id.into(), sources }),
+            IntentEnum::Subscribe(SubscribeIntent {
+                channel_id: channel_id.into(),
+                sources,
+            }),
         )
         .await?
         .fulfillment()
@@ -219,11 +236,12 @@ impl<T: IntentBrokeringCommunication> IntentBrokering for T {
         let namespace = namespace.into();
         debug!("Discovering services for namespace '{:?}'.", namespace);
 
-        self.fulfill(namespace, IntentEnum::Discover(DiscoverIntent {})).await?.fulfillment().map(
-            |discover: DiscoverFulfillment| {
+        self.fulfill(namespace, IntentEnum::Discover(DiscoverIntent {}))
+            .await?
+            .fulfillment()
+            .map(|discover: DiscoverFulfillment| {
                 discover.services.into_iter().map(|s| s.into()).collect()
-            },
-        )
+            })
     }
 
     async fn inspect(
@@ -233,28 +251,36 @@ impl<T: IntentBrokeringCommunication> IntentBrokering for T {
     ) -> Result<Vec<InspectionEntry>, Error> {
         let namespace = namespace.into();
         let query = query.into();
-        debug!("Inspecting namespace '{:?}' with query '{:?}'.", namespace, query);
+        debug!(
+            "Inspecting namespace '{:?}' with query '{:?}'.",
+            namespace, query
+        );
 
-        self.fulfill(namespace, IntentEnum::Inspect(InspectIntent { query: query.into() }))
-            .await?
-            .fulfillment()
-            .and_then(|inspect: InspectFulfillment| {
-                inspect
-                    .entries
-                    .into_iter()
-                    .map(|e| {
-                        let items_parse_result: Result<HashMap<Box<str>, Value>, ()> = e
-                            .items
-                            .into_iter()
-                            .map(|(key, value)| value.try_into().map(|value| (key.into(), value)))
-                            .collect();
-                        match items_parse_result {
-                            Ok(items) => Ok(InspectionEntry::new(e.path, items)),
-                            Err(_) => Err(Error::new("Could not parse value.")),
-                        }
-                    })
-                    .collect()
-            })
+        self.fulfill(
+            namespace,
+            IntentEnum::Inspect(InspectIntent {
+                query: query.into(),
+            }),
+        )
+        .await?
+        .fulfillment()
+        .and_then(|inspect: InspectFulfillment| {
+            inspect
+                .entries
+                .into_iter()
+                .map(|e| {
+                    let items_parse_result: Result<HashMap<Box<str>, Value>, ()> = e
+                        .items
+                        .into_iter()
+                        .map(|(key, value)| value.try_into().map(|value| (key.into(), value)))
+                        .collect();
+                    match items_parse_result {
+                        Ok(items) => Ok(InspectionEntry::new(e.path, items)),
+                        Err(_) => Err(Error::new("Could not parse value.")),
+                    }
+                })
+                .collect()
+        })
     }
 
     async fn write(
@@ -268,7 +294,10 @@ impl<T: IntentBrokeringCommunication> IntentBrokering for T {
 
         self.fulfill(
             namespace,
-            IntentEnum::Write(WriteIntent { key: key.into(), value: Some(value.into()) }),
+            IntentEnum::Write(WriteIntent {
+                key: key.into(),
+                value: Some(value.into()),
+            }),
         )
         .await?
         .fulfillment()
@@ -358,18 +387,25 @@ where
             .into();
 
         let result_stream = response.into_inner().map(|r| {
-            r.map_err_with("Could not establish stream.").and_then(|event| {
-                event
-                    .value
-                    .ok_or_else(|| Error::new("No value found in event payload."))
-                    .and_then(|v| {
-                        v.try_into().map_err(|_e: ()| Error::new("Could not parse protobuf value."))
-                    })
-                    .map(|data| Event { id: event.source.into_boxed_str(), data, seq: event.seq })
-            })
+            r.map_err_with("Could not establish stream.")
+                .and_then(|event| {
+                    event
+                        .value
+                        .ok_or_else(|| Error::new("No value found in event payload."))
+                        .and_then(|v| {
+                            v.try_into()
+                                .map_err(|_e: ()| Error::new("Could not parse protobuf value."))
+                        })
+                        .map(|data| Event {
+                            id: event.source.into_boxed_str(),
+                            data,
+                            seq: event.seq,
+                        })
+                })
         });
 
-        self.subscribe(namespace, channel_id, subscription_sources).await?;
+        self.subscribe(namespace, channel_id, subscription_sources)
+            .await?;
 
         Ok(result_stream.boxed())
     }

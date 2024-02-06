@@ -47,7 +47,11 @@ impl IntentProvider {
         simulation: VehicleSimulation,
         streaming_store: Arc<StreamingStore>,
     ) -> Self {
-        Self { url, vehicle_simulation: simulation, streaming_store }
+        Self {
+            url,
+            vehicle_simulation: simulation,
+            streaming_store,
+        }
     }
 }
 
@@ -117,7 +121,9 @@ impl ProviderService for IntentProvider {
                     .into();
 
                 FulfillmentEnum::Invoke(InvokeFulfillment {
-                    r#return: Some(ValueMessage { value: Some(result) }),
+                    r#return: Some(ValueMessage {
+                        value: Some(result),
+                    }),
                 })
             }
             IntentEnum::Inspect(inspect) => fulfill(inspect.query, &*VDT_SCHEMA),
@@ -127,7 +133,9 @@ impl ProviderService for IntentProvider {
         };
 
         Ok(Response::new(FulfillResponse {
-            fulfillment: Some(FulfillmentMessage { fulfillment: Some(response) }),
+            fulfillment: Some(FulfillmentMessage {
+                fulfillment: Some(response),
+            }),
         }))
     }
 }

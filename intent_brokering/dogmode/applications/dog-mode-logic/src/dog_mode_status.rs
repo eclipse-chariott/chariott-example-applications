@@ -40,7 +40,9 @@ pub(crate) async fn stream_dog_mode_status(
                 .map_err(|e| e.into())
                 .map(|r| {
                     r.and_then(|e| {
-                        e.data.to_bool().map_err(|_| anyhow!("Result was not of type 'Bool'."))
+                        e.data
+                            .to_bool()
+                            .map_err(|_| anyhow!("Result was not of type 'Bool'."))
                     })
                 }),
         ))
@@ -64,8 +66,14 @@ async fn detect_dog(
         intent_broker: &mut impl IntentBrokering,
         namespace: &str,
     ) -> Result<(), Error> {
-        if intent_broker.inspect(SYSTEM_REGISTRY_NAMESPACE, namespace).await?.is_empty() {
-            Err(anyhow!("Vehicle does not have registrations for namespace '{namespace}'."))
+        if intent_broker
+            .inspect(SYSTEM_REGISTRY_NAMESPACE, namespace)
+            .await?
+            .is_empty()
+        {
+            Err(anyhow!(
+                "Vehicle does not have registrations for namespace '{namespace}'."
+            ))
         } else {
             Ok(())
         }
@@ -93,7 +101,9 @@ async fn detect_dog(
 
     info!("Streaming with frame rate of {frames}fpm.");
 
-    let images = intent_broker.listen(CAMERA_NAMESPACE, [subscription_key]).await?;
+    let images = intent_broker
+        .listen(CAMERA_NAMESPACE, [subscription_key])
+        .await?;
 
     let dog_mode_state_stream = try_stream! {
         for await image in images {
@@ -111,7 +121,9 @@ async fn detect_dog(
             .into_blob()
             .map_err(|_| anyhow!("Unexpected image return type (expected: 'Blob')."))?;
 
-        let detect_request = DetectRequest { blob: Some(Blob { media_type, bytes }) };
+        let detect_request = DetectRequest {
+            blob: Some(Blob { media_type, bytes }),
+        };
 
         let mut detect_request_bytes = vec![];
         detect_request.encode(&mut detect_request_bytes)?;
@@ -132,7 +144,10 @@ async fn detect_dog(
             .map_err(|_| anyhow!("Detection response was not of type 'Any'."))?;
 
         let detected_categories: DetectResponse = Message::decode(&value[..])?;
-        Ok(detected_categories.entries.iter().any(|e| e.object == DOG_CATEGORY_NAME))
+        Ok(detected_categories
+            .entries
+            .iter()
+            .any(|e| e.object == DOG_CATEGORY_NAME))
     }
 
     Ok(Box::pin(dog_mode_state_stream))

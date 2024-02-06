@@ -34,7 +34,9 @@ pub async fn serve(url: Url, address: SocketAddr) -> Result<(), Error> {
         let result = if args().any(|arg| arg == "-m") {
             camera_logic.execute(cancellation_token.child_token()).await
         } else {
-            camera_logic.camera_loop(cancellation_token.child_token()).await
+            camera_logic
+                .camera_loop(cancellation_token.child_token())
+                .await
         };
 
         cancellation_token.cancel();

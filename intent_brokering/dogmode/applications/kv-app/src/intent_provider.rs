@@ -27,7 +27,10 @@ pub struct IntentProvider {
 
 impl IntentProvider {
     pub fn new(url: Url, streaming_store: Arc<StreamingStore>) -> Self {
-        Self { url, streaming_store }
+        Self {
+            url,
+            streaming_store,
+        }
     }
 
     fn write(&self, intent: WriteIntent) -> Result<WriteFulfillment, Status> {
@@ -69,7 +72,9 @@ impl ProviderService for IntentProvider {
 
         fulfillment.map(|f| {
             Response::new(FulfillResponse {
-                fulfillment: Some(FulfillmentMessage { fulfillment: Some(f) }),
+                fulfillment: Some(FulfillmentMessage {
+                    fulfillment: Some(f),
+                }),
             })
         })
     }

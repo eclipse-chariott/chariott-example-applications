@@ -47,9 +47,11 @@ SDK and ASP.NET Core runtime.
   Microsoft.AspNetCore.App 6.0.20 [/usr/share/dotnet/shared/Microsoft.AspNetCore.App]
   Microsoft.NETCore.App 6.0.20 [/usr/share/dotnet/shared/Microsoft.NETCore.App]
 ```
+
 ## Running the example applications
 
 ### Prerequisites
+
 In order to run an example applications with Chariott Intent Brokering, you must first build and
 run the Intent Brokering service. Follow the instructions
 [here](https://github.com/eclipse-chariott/chariott/tree/main/intent_brokering#getting-started) to
@@ -118,13 +120,13 @@ the components manually. Note the following behavior:
 Refer to the documentation of each application to learn more about how to use
 it.
 
-[local object detection]: ./local-object-detection/README.md
-[cloud object detection]: ./cloud-object-detection/README.md
-[simulated camera]: ./simulated-camera/README.md
-[ui]: ./dog-mode-ui/README.md
-[vas]: ./mock-vas/README.md
+[local object detection]: ./applications/local-object-detection/README.md
+[cloud object detection]: ./applications/cloud-object-detection/README.md
+[simulated camera]: ./applications/simulated-camera/README.md
+[ui]: ./applications/dog-mode-ui/README.md
+[vas]: ./applications/mock-vas/README.md
 [cognitive services]: https://docs.microsoft.com/en-us/azure/cognitive-services/what-are-cognitive-services
-[kv app]: ./kv-app/README.md
+[kv app]: ./applications/kv-app/README.md
 
 ## Flows
 

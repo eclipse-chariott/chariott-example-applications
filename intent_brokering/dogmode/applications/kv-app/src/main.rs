@@ -25,7 +25,12 @@ async fn wain() -> Result<(), Error> {
         "sdv.key-value-store",
         "0.0.1",
         "sdv.kvs",
-        [Intent::Read, Intent::Write, Intent::Subscribe, Intent::Discover],
+        [
+            Intent::Read,
+            Intent::Write,
+            Intent::Subscribe,
+            Intent::Discover,
+        ],
         "KVS_URL",
         "http://0.0.0.0:50064", // DevSkim: ignore DS137138
         ExecutionLocality::Local,
@@ -35,7 +40,10 @@ async fn wain() -> Result<(), Error> {
     tracing::info!("Application listening on: {url}");
 
     let streaming_store = Arc::new(StreamingStore::new());
-    let provider = Arc::new(IntentProvider::new(url.clone(), Arc::clone(&streaming_store)));
+    let provider = Arc::new(IntentProvider::new(
+        url.clone(),
+        Arc::clone(&streaming_store),
+    ));
 
     Server::builder()
         .add_service(ProviderServiceServer::from_arc(Arc::clone(&provider)))

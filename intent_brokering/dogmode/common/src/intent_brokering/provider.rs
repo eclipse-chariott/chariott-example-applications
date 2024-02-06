@@ -28,7 +28,9 @@ macro_rules! intent_provider_main {
 
             let result = main.await;
             trace_result("Error when executing main", &result);
-            result.map(|_| ExitCode::from(0)).unwrap_or(ExitCode::from(1))
+            result
+                .map(|_| ExitCode::from(0))
+                .unwrap_or(ExitCode::from(1))
         }
     };
 }

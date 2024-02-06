@@ -78,7 +78,9 @@ impl DogModeState {
 pub async fn main() -> Result<(), Error> {
     tracing_subscriber::fmt()
         .with_env_filter(
-            EnvFilter::builder().with_default_directive(Level::INFO.into()).from_env_lossy(),
+            EnvFilter::builder()
+                .with_default_directive(Level::INFO.into())
+                .from_env_lossy(),
         )
         .finish()
         .init();
@@ -96,27 +98,57 @@ pub async fn main() -> Result<(), Error> {
         const MEMBER_TYPE_PROPERTY: &str = "property";
 
         for (path, member_type, r#type) in [
-            (CABIN_TEMPERATURE_ID, /*..........*/ MEMBER_TYPE_PROPERTY, "int32"),
-            (AIR_CONDITIONING_STATE_ID, /*.....*/ MEMBER_TYPE_PROPERTY, "bool"),
-            (BATTERY_LEVEL_ID, /*..............*/ MEMBER_TYPE_PROPERTY, "int32"),
-            (ACTIVATE_AIR_CONDITIONING_ID, /*..*/ MEMBER_TYPE_COMMAND, "IAcmeAirconControl"),
+            (
+                CABIN_TEMPERATURE_ID,
+                /*..........*/ MEMBER_TYPE_PROPERTY,
+                "int32",
+            ),
+            (
+                AIR_CONDITIONING_STATE_ID,
+                /*.....*/ MEMBER_TYPE_PROPERTY,
+                "bool",
+            ),
+            (
+                BATTERY_LEVEL_ID,
+                /*..............*/ MEMBER_TYPE_PROPERTY,
+                "int32",
+            ),
+            (
+                ACTIVATE_AIR_CONDITIONING_ID,
+                /*..*/ MEMBER_TYPE_COMMAND,
+                "IAcmeAirconControl",
+            ),
         ] {
             inspect_dependency(
                 &mut intent_broker,
                 path,
-                &[(MEMBER_TYPE, member_type.into()), (TYPE, /*..*/ r#type.into())],
+                &[
+                    (MEMBER_TYPE, member_type.into()),
+                    (TYPE, /*..*/ r#type.into()),
+                ],
             )
             .await?;
         }
 
         for (path, r#type, state) in [
-            (SEND_NOTIFICATION_ID, "ISendNotification", &mut state.send_notification_disabled),
-            (SET_UI_MESSAGE_ID, "ISetUiMessage", &mut state.set_ui_message_disabled),
+            (
+                SEND_NOTIFICATION_ID,
+                "ISendNotification",
+                &mut state.send_notification_disabled,
+            ),
+            (
+                SET_UI_MESSAGE_ID,
+                "ISetUiMessage",
+                &mut state.set_ui_message_disabled,
+            ),
         ] {
             if let Err(e) = inspect_dependency(
                 &mut intent_broker,
                 path,
-                &[(MEMBER_TYPE, MEMBER_TYPE_COMMAND.into()), (TYPE, /*..*/ r#type.into())],
+                &[
+                    (MEMBER_TYPE, MEMBER_TYPE_COMMAND.into()),
+                    (TYPE, /*..*/ r#type.into()),
+                ],
             )
             .await
             {
@@ -126,7 +158,9 @@ pub async fn main() -> Result<(), Error> {
         }
 
         if state.send_notification_disabled && state.set_ui_message_disabled {
-            Err(anyhow!("Neither {SEND_NOTIFICATION_ID} nor {SET_UI_MESSAGE_ID} are available",))?;
+            Err(anyhow!(
+                "Neither {SEND_NOTIFICATION_ID} nor {SET_UI_MESSAGE_ID} are available",
+            ))?;
         }
 
         async fn inspect_dependency(
@@ -246,13 +280,21 @@ async fn run_dog_mode(
     }
 
     log_change("Dog mode", state, previous_state, |s| s.dogmode_status)?;
-    log_change("Cabin Temperature", state, previous_state, |s| s.temperature)?;
-    log_change("Air conditioning", state, previous_state, |s| s.air_conditioning_active)?;
+    log_change("Cabin Temperature", state, previous_state, |s| {
+        s.temperature
+    })?;
+    log_change("Air conditioning", state, previous_state, |s| {
+        s.air_conditioning_active
+    })?;
     log_change("Battery level", state, previous_state, |s| s.battery_level)?;
 
     if state.write_dog_mode_status && (state.dogmode_status != previous_state.dogmode_status) {
         intent_broker
-            .write(KEY_VALUE_STORE_NAMESPACE, DOG_MODE_STATUS_ID, state.dogmode_status.into())
+            .write(
+                KEY_VALUE_STORE_NAMESPACE,
+                DOG_MODE_STATUS_ID,
+                state.dogmode_status.into(),
+            )
             .await?;
     }
 
@@ -272,7 +314,10 @@ async fn run_dog_mode(
         if let Some(last_air_conditioning_invocation_time) =
             activate_air_conditioning_with_throttling(false, state, intent_broker).await?
         {
-            output_state = Some(DogModeState { last_air_conditioning_invocation_time, ..*state });
+            output_state = Some(DogModeState {
+                last_air_conditioning_invocation_time,
+                ..*state
+            });
         }
     }
 
@@ -314,10 +359,18 @@ async fn run_dog_mode(
     // If the battery level fell below a threshold value, send a warning to the car owner.
     if previous_state.battery_level > LOW_BATTERY_LEVEL && state.battery_level <= LOW_BATTERY_LEVEL
     {
-        send_notification(intent_broker, "The battery is low, please return to the car.", state)
-            .await?;
-        set_ui_message(intent_broker, "The battery is low, the animal is in danger.", state)
-            .await?;
+        send_notification(
+            intent_broker,
+            "The battery is low, please return to the car.",
+            state,
+        )
+        .await?;
+        set_ui_message(
+            intent_broker,
+            "The battery is low, the animal is in danger.",
+            state,
+        )
+        .await?;
     }
 
     async fn activate_air_conditioning(
@@ -336,7 +389,9 @@ async fn run_dog_mode(
         state: &DogModeState,
     ) -> Result<(), Error> {
         if !state.send_notification_disabled {
-            _ = intent_broker.invoke(VDT_NAMESPACE, SEND_NOTIFICATION_ID, [message.into()]).await?;
+            _ = intent_broker
+                .invoke(VDT_NAMESPACE, SEND_NOTIFICATION_ID, [message.into()])
+                .await?;
             Ok(())
         } else {
             // as this is an optional method we don't care
@@ -350,7 +405,9 @@ async fn run_dog_mode(
         state: &DogModeState,
     ) -> Result<(), Error> {
         if !state.set_ui_message_disabled {
-            _ = intent_broker.invoke(VDT_NAMESPACE, SET_UI_MESSAGE_ID, [message.into()]).await?;
+            _ = intent_broker
+                .invoke(VDT_NAMESPACE, SET_UI_MESSAGE_ID, [message.into()])
+                .await?;
             Ok(())
         } else {
             // as this is an optional method we don't care
@@ -367,7 +424,10 @@ async fn on_dog_mode_timer(
 ) -> Result<Option<DogModeState>, Error> {
     if let Some(air_conditioning_activation_time) = state.air_conditioning_activation_time {
         if state.air_conditioning_active {
-            return Ok(Some(DogModeState { air_conditioning_activation_time: None, ..*state }));
+            return Ok(Some(DogModeState {
+                air_conditioning_activation_time: None,
+                ..*state
+            }));
         } else if Instant::now()
             > air_conditioning_activation_time + AIR_CONDITIONING_ACTIVATION_TIMEOUT
         {
@@ -379,7 +439,10 @@ async fn on_dog_mode_timer(
                 )
                 .await?;
 
-            return Ok(Some(DogModeState { air_conditioning_activation_time: None, ..*state }));
+            return Ok(Some(DogModeState {
+                air_conditioning_activation_time: None,
+                ..*state
+            }));
         }
     }
 
@@ -481,7 +544,10 @@ mod tests {
         let original_state = DogModeState::new();
 
         // Act
-        let state = DogModeState { dogmode_status: true, ..original_state };
+        let state = DogModeState {
+            dogmode_status: true,
+            ..original_state
+        };
 
         let result = run_dog_mode(&state, &original_state, &mut car_controller).await;
 
@@ -502,14 +568,20 @@ mod tests {
         };
 
         // Act
-        let state = DogModeState { temperature: MAX_TEMPERATURE + 1, ..original_state };
+        let state = DogModeState {
+            temperature: MAX_TEMPERATURE + 1,
+            ..original_state
+        };
 
         let result = run_dog_mode(&state, &original_state, &mut car_controller).await;
 
         // Assert
         assert!(result.is_ok());
         assert_eq!(
-            CarControllerMock { air_conditioning_state: Some(true), ..Default::default() },
+            CarControllerMock {
+                air_conditioning_state: Some(true),
+                ..Default::default()
+            },
             car_controller
         );
     }
@@ -526,7 +598,10 @@ mod tests {
         };
 
         // Act
-        let state = DogModeState { air_conditioning_active: true, ..original_state };
+        let state = DogModeState {
+            air_conditioning_active: true,
+            ..original_state
+        };
 
         let result = run_dog_mode(&state, &original_state, &mut car_controller).await;
 
@@ -554,7 +629,10 @@ mod tests {
         };
 
         // Act
-        let state = DogModeState { battery_level: LOW_BATTERY_LEVEL, ..original_state };
+        let state = DogModeState {
+            battery_level: LOW_BATTERY_LEVEL,
+            ..original_state
+        };
 
         let result = run_dog_mode(&state, &original_state, &mut car_controller).await;
 
@@ -582,14 +660,20 @@ mod tests {
         };
 
         // Act
-        let state = DogModeState { temperature: MIN_TEMPERATURE - 1, ..original_state };
+        let state = DogModeState {
+            temperature: MIN_TEMPERATURE - 1,
+            ..original_state
+        };
 
         let result = run_dog_mode(&state, &original_state, &mut car_controller).await;
 
         // Assert
         assert!(result.is_ok());
         assert_eq!(
-            CarControllerMock { air_conditioning_state: Some(false), ..Default::default() },
+            CarControllerMock {
+                air_conditioning_state: Some(false),
+                ..Default::default()
+            },
             car_controller
         );
     }
@@ -605,7 +689,10 @@ mod tests {
             ..DogModeState::new()
         };
 
-        let state = DogModeState { temperature: MAX_TEMPERATURE + 1, ..original_state };
+        let state = DogModeState {
+            temperature: MAX_TEMPERATURE + 1,
+            ..original_state
+        };
 
         // act
         let result = run_dog_mode(&state, &original_state, &mut car_controller).await;
@@ -613,7 +700,11 @@ mod tests {
         // assert
         assert_instant(
             Instant::now(),
-            result.unwrap().unwrap().air_conditioning_activation_time.unwrap(),
+            result
+                .unwrap()
+                .unwrap()
+                .air_conditioning_activation_time
+                .unwrap(),
             Duration::from_secs(5),
         );
     }
@@ -660,7 +751,10 @@ mod tests {
         let result = on_dog_mode_timer(&state, &mut car_controller).await;
 
         // assert
-        assert_eq!(None, result.unwrap().unwrap().air_conditioning_activation_time);
+        assert_eq!(
+            None,
+            result.unwrap().unwrap().air_conditioning_activation_time
+        );
     }
 
     #[tokio::test]
@@ -677,7 +771,10 @@ mod tests {
         let result = on_dog_mode_timer(&state, &mut car_controller).await;
 
         // assert
-        assert_eq!(None, result.unwrap().unwrap().air_conditioning_activation_time);
+        assert_eq!(
+            None,
+            result.unwrap().unwrap().air_conditioning_activation_time
+        );
     }
 
     #[tokio::test]
@@ -704,8 +801,11 @@ mod tests {
     async fn air_conditioning_should_invoke_function_after_throttling_expired() {
         // arrange
         let mut car_controller: CarControllerMock = Default::default();
-        let previous_state =
-            DogModeState { temperature: 40, dogmode_status: true, ..DogModeState::new() };
+        let previous_state = DogModeState {
+            temperature: 40,
+            dogmode_status: true,
+            ..DogModeState::new()
+        };
         let state = DogModeState {
             temperature: 15,
             dogmode_status: true,

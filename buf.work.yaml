@@ -1,3 +1,4 @@
 version: v1
 directories:
+  - external/chariott/intent_brokering/proto
   - intent_brokering/dogmode/applications/proto

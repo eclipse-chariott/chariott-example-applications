@@ -187,7 +187,10 @@ impl Builder {
                         .collect(),
                 };
 
-                tracing::info!("Registered with IntentBrokering runtime: {:?}", register_request);
+                tracing::info!(
+                    "Registered with IntentBrokering runtime: {:?}",
+                    register_request
+                );
                 _ = client
                     .register(register_request.clone())
                     .await

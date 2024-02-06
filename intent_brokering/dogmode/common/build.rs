@@ -7,8 +7,13 @@ use tonic_build::configure;
 
 fn main() -> Result<(), Box<dyn Error>> {
     configure().compile(
-        &[Path::new("../applications/proto/examples/detection/v1/detection.proto")],
-        &[Path::new("../../../external/chariott/intent_brokering/proto/"), Path::new("../applications/proto/examples/detection/v1/")],
+        &[Path::new(
+            "../applications/proto/examples/detection/v1/detection.proto",
+        )],
+        &[
+            Path::new("../../../external/chariott/intent_brokering/proto/"),
+            Path::new("../applications/proto/examples/detection/v1/"),
+        ],
     )?;
 
     Ok(())

@@ -123,7 +123,9 @@ impl From<ValueEnum> for Value {
 
 impl From<Value> for ValueMessage {
     fn from(value: Value) -> Self {
-        ValueMessage { value: Some(value.into()) }
+        ValueMessage {
+            value: Some(value.into()),
+        }
     }
 }
 
