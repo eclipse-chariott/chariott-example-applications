@@ -8,11 +8,11 @@ manual mode where you specify the frame rate event yourself.
 ## To run the application
 
 1. Start the Intent Brokering runtime by executing `cargo run -p intent_brokering` from the root directory
-2. Navigate to `intent_brokering/examples/applications/simulated-camera` directory
+2. Navigate to `intent_brokering/dogmode/applications/simulated-camera` directory
 3. Create an `images` directory and place there all the `.jpg` files you want the
    camera application to stream
 4. Start camera application by executing `cargo run` from the
-   `intent_brokering/examples/applications/simulated-camera` directory.
+   `intent_brokering/dogmode/applications/simulated-camera` directory.
 5. In another terminal, open a channel to the simulated-camera with `grpcurl -v \
    -plaintext -import-path proto -proto \
    intent_brokering/proto/intent_brokering/streaming/v1/streaming.proto localhost:50066 \
