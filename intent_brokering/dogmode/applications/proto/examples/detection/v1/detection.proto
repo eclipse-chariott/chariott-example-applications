@@ -1,0 +1,22 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+// SPDX-License-Identifier: MIT
+
+syntax = "proto3";
+
+package examples.detection.v1;
+
+import "intent_brokering/common/v1/common.proto";
+
+message DetectRequest {
+    intent_brokering.common.v1.Blob blob = 1;
+}
+
+message DetectResponse {
+    repeated DetectEntry entries = 1;
+}
+
+message DetectEntry {
+    string object = 1;
+    double confidence = 2;
+}

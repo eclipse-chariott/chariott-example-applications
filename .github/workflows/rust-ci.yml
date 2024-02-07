@@ -1,0 +1,84 @@
+name: Rust CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'intent_brokering/dogmode/common/**'
+      - 'intent_brokering/dogmode/applications/**'
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      - 'rust-toolchain.toml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  static_code_analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install protobuf-compiler
+        run: sudo apt-get install -y protobuf-compiler
+      - name: Install stable toolchain
+        run: |
+          rustup show
+          rustup component add rustfmt clippy
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v1
+      - run: cargo check --workspace --locked
+      - run: cargo clippy --all-targets --all-features --workspace --no-deps -- -D warnings
+      - run: cargo fmt --all -- --check
+      - name: Run doctest only
+        # we run doctests here as cargo tarpaulin (our test runner)
+        # requires nightly toolchain to do so
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace --doc
+      - name: Run cargo doc
+        # This step is required to detect possible errors in docs that are not doctests.
+        uses: actions-rs/cargo@v1
+        with:
+          command: doc
+          args: --workspace --no-deps # Warnings are treated as errors due to our .cargo/config file.
+
+
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install protobuf-compiler
+        run: sudo apt-get install -y protobuf-compiler
+      - name: Install stable toolchain
+        run: rustup show
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v1
+      - name: Run cargo-tarpaulin
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          version: '0.21.0'
+          args: '--workspace --ignore-tests --skip-clean --exclude-files spikes/* --exclude-files examples/* --exclude-files tests/*'
+
+  buf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: bufbuild/buf-setup-action@v1
+        with:
+          version: '1.8.0'
+      - uses: bufbuild/buf-lint-action@v1
