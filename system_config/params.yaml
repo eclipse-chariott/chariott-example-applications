@@ -1,0 +1,13 @@
+# Parameter file for system
+
+chariott_uri: "http://0.0.0.0:50000"
+
+# agemo values
+agemo_authority: "0.0.0.0:50051"
+agemo_messaging_uri: "mqtt://0.0.0.0:1883"
+agemo_namespace: "sdv.pubsub"
+agemo_name: "dynamic.pubsub"
+agemo_version: "0.1.0"
+
+# ibeji values
+ibeji_authority: "0.0.0.0:5010"

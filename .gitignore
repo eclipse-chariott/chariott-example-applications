@@ -21,3 +21,6 @@ bld/
 
 # Stops pushes of local vscode files.
 /.vscode/*
+
+# Ignore system config out_dir
+**/out_dir/*
