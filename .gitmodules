@@ -1,3 +1,4 @@
 [submodule "external/chariott"]
 	path = external/chariott
 	url = https://github.com/eclipse-chariott/chariott
+	branch = main
