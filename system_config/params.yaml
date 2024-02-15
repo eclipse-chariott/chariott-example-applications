@@ -1,6 +1,6 @@
 # Parameter file for system
 
-chariott_uri: "http://0.0.0.0:50000"
+chariott_uri: "http://0.0.0.0:50000" # DevSkim: ignore DS137138
 
 # agemo values
 agemo_authority: "0.0.0.0:50051"

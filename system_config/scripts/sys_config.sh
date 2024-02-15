@@ -163,7 +163,7 @@ do
 
     for ((t=0;t<$num_templates;t++))
     do
-        arg_list=() 
+        arg_list=()
         template=$(yq ".${service}[$t] | .template" $config_file)
         command=$(yq ".${service}[$t] | .command" $config_file)
 
