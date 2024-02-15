@@ -26,11 +26,10 @@ create_service_dir() {
     echo "Setting up output directory for $service_name..."
     service_dir="${output_dir}/${service_name}"
 
-    # Create service output directory
     mkdir -p $service_dir
 }
 
-# Function to create service directory
+# Function to config file from template
 #
 # Arguments
 # * service_directory - The path to the service directory
@@ -44,14 +43,12 @@ create_config_file_from_template() {
     file_name=$(basename $template)
 
     echo "Creating config file '$file_name'..."
-
     out_file="${service_dir}/${file_name}"
 
-    # copy template to output directory
     cp $file_template $out_file
 }
 
-# Function to create service directory
+# Function to get the service config args
 #
 # Arguments
 # * service_name - The name of the service used as the directory name
@@ -106,7 +103,6 @@ get_service_config_args() {
         # Add argument to arg list
         if $add_to_list; then
             arg_list+=(${arg})
-            echo "${arg_list[@]}"
         fi
     done
 }
