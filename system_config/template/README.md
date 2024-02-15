@@ -4,18 +4,18 @@ This readme describes the [`sys_config.yaml`](sys_config.yaml) template in detai
 
 ## Overview
 
-The [`sys_config.yaml`](sys_config.yaml) is used by the [`sys_config.sh`](../sys_config.sh) script
-to determine what services should be configured and how to configure them. The file defines service
-configuration metadata, telling the `sys_config` script what service specific configuration files
-need to be created and what command to use to create these files with the appropriate argument
-information for the command.
+The [`sys_config.yaml`](sys_config.yaml) is used by the [`sys_config.sh`](../scripts/sys_config.sh)
+script to determine what services should be configured and how to configure them. The file defines
+service configuration metadata, telling the `sys_config` script what service specific configuration
+files need to be created and what command to use to create these files with the appropriate
+argument information for the command.
 
 ## System Configuration Template Components
 
 The template is comprised of three major parts, the `services` array, `out_dir` field, and
 `services metadata` list:
 
-### Services Array:
+### Services Array
 
 ```yaml
 services: []
@@ -28,7 +28,7 @@ correlated with the [`Service Metadata`](#service-metadata). An example with two
 services: ["service1", "service2"]
 ```
 
-### Output Directory:
+### Output Directory
 
 ```yaml
 output_dir: <<value>>
@@ -37,7 +37,7 @@ output_dir: <<value>>
 This is a path to the directory where the configuration files should be placed. Each service
 will get their own sub_directory (named the same as the name used in the
 [`Services Array`](#services-array)). The path can be relative to the path where the
-[`sys_config.sh`](../sys_config.sh) script is run or an absolute path. An absolute path is
+[`sys_config.sh`](../scripts/sys_config.sh) script is run or an absolute path. An absolute path is
 generally preferred if the sys_config.sh script may be run from an unknown location. An example of
 an absolute path is:
 
@@ -45,7 +45,7 @@ an absolute path is:
 output_dir: /home/userA/system_config
 ```
 
-### Service Metadata:
+### Service Metadata
 
 ```yaml
 `service_name`:
@@ -69,8 +69,8 @@ and `args` list:
 ```
 
 The template field is a path to the relevant service config template file. The path can be relative
-to the path where the [`sys_config.sh`](../sys_config.sh) script is run or an absolute path. An
-absolute path is generally preferred if the sys_config.sh script may be run from an unknown
+to the path where the [`sys_config.sh`](../scripts/sys_config.sh) script is run or an absolute path
+. An absolute path is generally preferred if the sys_config.sh script may be run from an unknown
 location.
 
 An example pointing to a config template for `service_1` is:
@@ -86,12 +86,12 @@ command: <<value>>
 ```
 
 The command field is a path to the relevant service config script. The path can be relative to the
-path where the [`sys_config.sh`](../sys_config.sh) script is run or an absolute path. An absolute
-path is generally preferred if the sys_config.sh script may be run from an unknown location. The
-config script will handle creating the appropriate service configuration with any common parameters
-passed to the system config script via the params file. A simple yaml find and replace params
-script is provided in this repo [here](../scripts/replace_params_yaml.sh) and can work for most
-basic yaml config files.
+path where the [`sys_config.sh`](../scripts/sys_config.sh) script is run or an absolute path. An
+absolute path is generally preferred if the sys_config.sh script may be run from an unknown
+location. The config script will handle creating the appropriate service configuration with any
+common parameters passed to the system config script via the params file. A simple yaml find and
+replace params script is provided in this repo [here](../scripts/replace_params_yaml.sh) and can
+work for most basic yaml config files.
 
 An example pointing to the `replace_params_yaml.sh` script:
 
@@ -110,9 +110,9 @@ args:
     optional: <<true|false>>
 ```
 
-The argument list is a set of argument metadata that tells the [`sys_config.sh`](../sys_config.sh)
-script what arguments to pass to the config script defined in the [`command field`](#command-field)
-.
+The argument list is a set of argument metadata that tells the
+[`sys_config.sh`](../scripts/sys_config.sh) script what arguments to pass to the config script
+defined in the [`command field`](#command-field).
 
 ##### Arg Field
 
@@ -144,9 +144,9 @@ attempt to replace the placeholder with a value defined in in the [`params array
 ##### Params Array
 
 The `params` array is a list of parameters to extract from a `params.yaml` file passed to the
-[`sys_config.sh`](../sys_config.sh) script. The script will also check to see if the param name is
-set as a variable in the `sys_config` script. An example of this is the `out_file` variable which
-is a variable generated at script runtime and is not present in the `params.yaml` file. The
+[`sys_config.sh`](../scripts/sys_config.sh) script. The script will also check to see if the param
+name is set as a variable in the `sys_config` script. An example of this is the `out_file` variable
+which is a variable generated at script runtime and is not present in the `params.yaml` file. The
 extracted parameter values are inserted into the `arg` field, replacing the placeholders in the
 string.
 
