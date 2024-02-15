@@ -54,8 +54,9 @@ if [[ -z "${file}" || ${#param_list[@]} -eq 0 ]]; then
     exit 1
 fi
 
-# Uncomment any commented out entries so the file can be properly processed
-sed -i -e 's/\(#[[:space:]]\)\(\(.*:\)\|\(.*: <<value>>\)\)$/\2/g' $file
+# Uncomment any commented out entries following the pattern
+# '(#\s)(.*:(\s<<value>>)?)$' so the file can be properly processed
+sed -i -e 's/\(#[[:space:]]\)\(.*:\([[:space:]]<<value>>\)\?\)$/\2/g' $file
 
 for i in "${param_list[@]}"
 do
@@ -67,7 +68,7 @@ do
     yq -i "with((.${name} | select(. == \"<<value>>\")) ; . = \"${value}\" | . style=\"double\")" ${file}
 done
 
-# Remove and unpopulated/null values. Will clean up any parents that have no
+# Remove any unpopulated/null values. Will clean up any parents that have no
 # children
 yq -i 'del(.. | select(. == "<<value>>")), del(.. | select(. | length == 0))' ${file}
 
