@@ -63,8 +63,10 @@ An example can be found here: [`params.yaml`](./params.yaml).
 1. <b>Q</b>: How do I add a new service to the system configuration?
 
     <b>A</b>: There are 3 steps for adding a new service to the system configuration:
-    
+
     1. Add the service name to the `services` array in `sys_config.yaml`.
+
     1. Add a new service metadata object (as defined in
     [`service metadata`](./template/README.md#service-metadata)).
+
     1. Update the `params.yaml` file with any new common parameters.
