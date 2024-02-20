@@ -1,0 +1,98 @@
+# System configuration file
+
+# Services to configure
+# Example: ["service1", "service2"]
+services: ["agemo", "ibeji"]
+
+# Output directory path for generated config files.
+# Example: /path/to/output/dir
+output_dir: ./system_config/out_dir
+
+# Service configuration metadata
+# Array of template files
+agemo:
+    # Template config file + path
+    # Example: /path/to/template/config.yaml
+  - template: ./system_config/template/example_service_config/agemo_config.yaml
+    # Path to configuration script to use for generating service config file from the above template
+    # Example: /path/to/config/replace_params_yaml.sh
+    command: ./system_config/scripts/replace_params_yaml.sh
+    # Array of arguments to pass to above command. Format is:
+    # - arg: "[flag] [arg_value [{1}]]"
+    #   params: ["param1", "param2"] # Correlates to '{x}' values in above arg string
+    #   optional: <true|false> # Tells script whether to fail if any params are not present
+    args:
+      - arg: "--file {1}"
+        params: ["out_file"]
+        optional: false
+      - arg: "--param pub_sub_authority={1}"
+        params: ["agemo_authority"]
+        optional: true
+      - arg: "--param messaging_uri={1}"
+        params: ["agemo_messaging_uri"]
+        optional: true
+      - arg: "--param chariott_uri={1}"
+        params: ["chariott_uri"]
+        optional: false
+      - arg: "--param namespace={1}"
+        params: ["agemo_namespace"]
+        optional: true
+      - arg: "--param name={1}"
+        params: ["agemo_name"]
+        optional: true
+      - arg: "--param version={1}"
+        params: ["agemo_version"]
+        optional: true
+
+# Service configuration metadata
+# Array of template files
+ibeji:
+    # Template config file + path
+    # Example: /path/to/template/config.yaml
+  - template: ./system_config/template/example_service_config/ibeji_config1.yaml
+    # Path to configuration script to use for generating service config file from the above template
+    # Example: /path/to/config/replace_params_yaml.sh
+    command: ./system_config/scripts/replace_params_yaml.sh
+    # Array of arguments to pass to above command. Format is:
+    # - arg: [flag] [arg_value [{1}]]
+    #   [params]: ["param1", "param2"] # Only needed if replacement str '{x}' is in arg.
+    #   optional: <true|false> # Tells script whether to fail if any params are not present.
+    args:
+      - arg: "--file {1}"
+        params: ["out_file"]
+        optional: false
+      - arg: "--param invehicle_digital_twin_authority={1}"
+        params: ["ibeji_authority"]
+        optional: false
+      - arg: "--param chariott_uri={1}"
+        params: ["chariott_uri"]
+        optional: false
+    # Template config file + path
+    # Example: /path/to/template/config.yaml
+  - template: ./system_config/template/example_service_config/ibeji_config2.yaml
+    # Path to configuration script to use for generating service config file from the above template
+    # Example: /path/to/config/replace_params_yaml.sh
+    command: ./system_config/scripts/replace_params_yaml.sh
+    # Array of arguments to pass to above command. Format is:
+    # - arg: [flag] [arg_value [{1}]]
+    #   [params]: ["param1", "param2"] # Only needed if replacement str '{x}' is in arg.
+    #   optional: <true|false> # Tells script whether to fail if any params are not present.
+    args:
+      - arg: "--file {1}"
+        params: ["out_file"]
+        optional: false
+      - arg: "--param base_authority={1}"
+        params: ["ibeji_authority"]
+        optional: false
+      - arg: "--param managed_subscribe_uri_source.Chariott.chariott_uri={1}"
+        params: ["chariott_uri"]
+        optional: false
+      - arg: "--param managed_subscribe_uri_source.Chariott.service_identifier.namespace={1}"
+        params: ["agemo_namespace"]
+        optional: false
+      - arg: "--param managed_subscribe_uri_source.Chariott.service_identifier.name={1}"
+        params: ["agemo_name"]
+        optional: false
+      - arg: "--param managed_subscribe_uri_source.Chariott.service_identifier.version={1}"
+        params: ["agemo_version"]
+        optional: false

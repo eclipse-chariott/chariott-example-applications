@@ -1,0 +1,27 @@
+# System configuration file
+
+# Services to configure
+# Example: ["service1", "service2"]
+services: []
+
+# Output directory path for generated config files.
+# Example: /path/to/output/dir
+output_dir: <<value>>
+
+# Service configuration metadata
+# Array of template files
+service1:
+    # Template config file + path
+    # Example: /path/to/template/config.yaml
+  - template: <<value>>
+    # Path to configuration script to use for generating service config file from the above template
+    # Example: /path/to/config/replace_params_yaml.sh
+    command: <<value>>
+    # Array of arguments to pass to above command. Format is:
+    # - arg: [flag] [arg_value [{1}]]
+    #   [params]: ["param1", "param2"] # Correlates to '{x}' values in above arg string
+    #   optional: <true|false> # Tells script whether to fail if any params are not present.
+    args:
+      - arg: <<value>>
+        params: []
+        optional: false
