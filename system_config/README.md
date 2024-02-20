@@ -57,8 +57,8 @@ An example can be found here: [`params.yaml`](./params.yaml).
 
 1. <b>Q</b>: I changed a value in the common `params.yaml` file. What should I do?
 
-    <b>A</b>: If a change has been made to common parameter you should re-run the `sys_config.sh` script
-    to regenerate the service configuration files.
+    <b>A</b>: If a change has been made to a common parameter you should re-run the `sys_config.sh`
+    script to regenerate the service configuration files.
 
 1. <b>Q</b>: How do I add a new service to the system configuration?
 
@@ -70,3 +70,10 @@ An example can be found here: [`params.yaml`](./params.yaml).
     [`service metadata`](./template/README.md#service-metadata)).
 
     1. Update the `params.yaml` file with any new common parameters.
+
+1. <b>Q</b>: A service included in the `sys_config.yaml` file has added a new configuration value,
+do I need to re-run the service configuration script?
+
+    <b>A</b>: Yes, it is safest to re-run the `sys_config.sh` script whenever there has been a
+    change to a services configuration template or an update to the service configuration metadata
+    in the `sys_config.yaml` file.
