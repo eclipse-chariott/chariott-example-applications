@@ -75,5 +75,5 @@ An example can be found here: [`params.yaml`](./params.yaml).
 do I need to re-run the service configuration script?
 
     <b>A</b>: Yes, it is safest to re-run the `sys_config.sh` script whenever there has been a
-    change to a services configuration template or an update to the service configuration metadata
+    change to a service configuration template or an update to the service configuration metadata
     in the `sys_config.yaml` file.
