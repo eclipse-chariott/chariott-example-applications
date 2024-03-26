@@ -6,7 +6,7 @@ license = "MIT"
 
 [dependencies]
 async-trait = { workspace = true }
-bytes = "1.5"
+bytes = "1.6"
 intent_brokering_common = { workspace = true }
 intent_brokering_proto = { workspace = true }
 ess = { path = "../../../external/chariott/intent_brokering/ess" }
