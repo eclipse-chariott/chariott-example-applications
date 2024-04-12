@@ -6,13 +6,13 @@ license = "MIT"
 
 [dependencies]
 async-trait = { workspace = true }
-base64 = "0.21.7"
+base64 = "0.22.0"
 intent_brokering_common = { workspace = true }
 intent_brokering_proto = { workspace = true }
 examples-common = { path = "../../common/" }
 futures = { workspace = true }
 lazy_static = { workspace = true }
-reqwest = { version = "0.11.23", features = ["json"] }
+reqwest = { version = "0.12.3", features = ["json"] }
 serde = { workspace = true }
 tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
 tokio-stream = { workspace = true }
