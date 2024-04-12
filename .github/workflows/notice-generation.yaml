@@ -12,7 +12,10 @@ jobs:
   notice_generation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - name: Install stable toolchain
         run: rustup show
       - name: Cache Dependencies
