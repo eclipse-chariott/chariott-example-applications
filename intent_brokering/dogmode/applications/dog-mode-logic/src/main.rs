@@ -169,6 +169,9 @@ pub async fn main() -> Result<(), Error> {
             expected_properties: &[(&str, Value)],
         ) -> Result<(), Error> {
             let inspection_result = intent_broker.inspect(VDT_NAMESPACE, path).await?;
+
+            // try_fold does not work in this case. It would short-circuit on Error and we only want an Error if all of the entries are Error.
+            #[allow(clippy::manual_try_fold)]
             inspection_result.iter().map(|m| {
                 expected_properties.iter().map(|(expected_key, expected_value)| m.get(*expected_key)
                     .ok_or_else(|| anyhow!("Member does not specify {expected_key:?}."))
