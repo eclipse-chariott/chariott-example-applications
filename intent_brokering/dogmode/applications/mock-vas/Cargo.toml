@@ -28,7 +28,7 @@ uuid = { workspace = true }
 async-trait = { workspace = true }
 intent_brokering_common = { workspace = true }
 env_logger = "*"
-test-log = "0.2.15"
+test-log = "0.2.16"
 tokio-test = "0.4.4"
 
 [build-dependencies]
