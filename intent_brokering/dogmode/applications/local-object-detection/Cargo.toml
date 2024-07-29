@@ -9,7 +9,7 @@ async-trait = { workspace = true }
 intent_brokering_common = { workspace = true }
 intent_brokering_proto = { workspace = true }
 examples-common = { path = "../../common/" }
-image = "0.25.1"
+image = "0.25.2"
 lazy_static = { workspace = true }
 ndarray = "0.15.6"
 serde = { workspace = true }
