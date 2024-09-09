@@ -6,7 +6,7 @@ license = "MIT"
 
 [dependencies]
 anyhow = { workspace = true }
-async-std = "1.12"
+async-std = "1.13"
 async-trait = { workspace = true }
 intent_brokering_common = { workspace = true }
 intent_brokering_proto = { workspace = true }
